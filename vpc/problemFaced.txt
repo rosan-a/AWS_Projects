@@ -1,0 +1,20 @@
+Problem Summary
+During the VPC project, I encountered several challenges:
+
+SSH Permissions:
+
+I struggled to SSH into the bastion server due to incorrect permissions on the key pair file.
+Initial Access Issues:
+
+My first attempt to SSH into the two servers failed. I launched a simple HTML page on server 1, but it didn’t work, prompting me to terminate everything.
+Bastion Server Placement:
+
+In my second attempt, I mistakenly created the bastion server in the private subnet, which prevented SSH access.
+Port Confusion:
+
+I initially launched the web server on port 8000 but had only allowed traffic on port 80. After realizing this, I changed the web server configuration to use port 80.
+Load Balancer Health Issues:
+
+After successfully launching two websites on the private servers and setting up the load balancer, one website showed as unhealthy. I accessed it via SSH to correct the issue.
+Despite these challenges, I successfully completed my project, launching two operational websites on the private servers.
+

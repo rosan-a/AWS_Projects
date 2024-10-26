@@ -1,0 +1,53 @@
+Steps to Set Up a VPC and Access Instances
+1.Create a VPC with one public subnet and one private subnet.
+
+2.Create the VPC across two Availability Zones (AZ).
+
+3.Set up a NAT Gateway for routing purposes.
+
+4.Create two EC2 instances in the private subnet without public IP addresses.
+
+5.Create a bastion server in the public subnet to configure and SSH into the private subnet instances.
+
+6.Copy the key pair into your bastion server to SSH into private instances:
+
+	scp -i test-key.pem server.pem ubuntu@ec2-3-86-28-158.compute-1.amazonaws.com:~
+
+7.SSH into the bastion server:
+
+	ssh -i /path/to/bastion-key.pem ec2-user@<bastion-public-ip>
+
+8.Check and change the copied file permissions:
+
+	chmod 600 ~/private-key.pem
+
+9.SSH into the private instance from the bastion server:
+
+	 ssh -i server.pem ubuntu@10.0.143.201
+
+10.Install a web server:
+	If using EC2 user data for Amazon Linux:
+	
+yum update -y
+yum install httpd.x86_64 -y
+systemctl start httpd.service
+systemctl enable httpd.service
+echo "Hello world from $(hostname -f)" > /var/www/html/index.html
+
+	If using EC2 user data for Ubuntu:
+
+sudo su
+apt update -y
+apt install apache2 -y
+systemctl start apache2
+systemctl enable apache2
+rm /var/www/html/index.html
+echo "Hello world from $(hostname -f)" > /var/www/html/index.html
+
+
+11.Create an Elastic Load Balancer (ELB) for the private instances to distribute traffic evenly.
+
+12.Access the instances through the ELB DNS.
+
+python3 -m htto.server 8000
+
