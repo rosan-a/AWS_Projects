@@ -1,0 +1,33 @@
+version: 0.2
+
+env:
+  parameter-store:
+    DOCKER_REGISTRY_USERNAME: "rosan2005"
+    DOCKER_REGISTRY_PASSWORD: "Rosan@0705"
+    DOCKER_REGISTRY_URL: "docker.io"
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18 # Specify the Node.js version required for your app
+  pre_build:
+    commands:
+      - echo "Installing dependencies..."
+      - cd cicd/simple-node-app/
+      - npm install
+  build:
+    commands:
+      - echo "Running tests..."
+      - npm test
+      - echo "Building Docker image..."
+      - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
+      - docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-node-app:latest" .
+      - docker push "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-node-app:latest"
+  post_build:
+    commands:
+      - echo "Build completed successfully!"
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: ../simple-node-app

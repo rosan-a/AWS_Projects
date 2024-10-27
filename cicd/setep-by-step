@@ -1,0 +1,94 @@
+
+# CI/CD Pipeline Setup with AWS CodeBuild, CodePipeline, and CodeDeploy
+
+## Step 1: Set Up CodeBuild
+
+1. Go to the **CodeBuild** UI in the AWS Management Console and click **Create project**.
+2. Enter a **Project name**.
+3. **Select source**:
+   - Choose **GitHub** as the source provider, and ensure you establish the connection with GitHub.
+   - Choose your GitHub repository.
+4. **Set up the Environment**:
+   - Choose the environment type and version suitable for your application (e.g., Node.js or Python).
+   - **Role**: Create a new role or select an existing IAM role with the necessary permissions for CodeBuild.
+5. **Write your build specification**:
+   - Include the `buildspec.yml` file in your codebase with instructions for the build (e.g., installing dependencies, running tests, building Docker images, etc.).
+6. Click **Create build project** and run a **test build** to ensure everything is configured correctly. Debug any errors that arise.
+
+---
+
+## Step 2: Set Up CodePipeline
+
+1. Go to the **CodePipeline** UI and click **Create pipeline**.
+2. **Pipeline settings**:
+   - Enter a **Pipeline name**.
+   - Create or select an **IAM role** for the pipeline.
+3. **Source stage**:
+   - Select **GitHub** as the source provider and connect your GitHub repository.
+4. **Build stage**:
+   - Choose **AWS CodeBuild** as the build provider and select your CodeBuild project from Step 1.
+5. **Deploy stage**:
+   - We’ll configure this with **AWS CodeDeploy** in Step 3.
+
+Click **Create pipeline** to finalize the setup. This pipeline will now automatically trigger on commits to the GitHub repository.
+
+---
+
+## Step 3: Set Up CodeDeploy
+
+1. **Create a CodeDeploy Application**:
+   - Go to the **CodeDeploy** UI and click **Create application**.
+   - Enter an **Application name**.
+   - Select a **Compute platform** based on your deployment target, such as **EC2/On-Premises** or **ECS**.
+   
+2. **Create a Deployment Group**:
+   - After creating the application, select it and click **Create deployment group**.
+   - Enter a **Deployment group name**.
+   - Choose or create an **IAM role** with permissions to access resources for CodeDeploy (EC2, ECS, S3, etc.).
+   
+   - #### For EC2:
+     - **Deployment type**: Choose **In-place** or **Blue/Green** based on your needs.
+     - **Environment configuration**: Select **Amazon EC2 instances** or **Auto Scaling group**.
+     - Configure instance tags or Auto Scaling groups to target the instances where the application should be deployed.
+     - **Load balancer** (optional): Attach a load balancer to minimize downtime.
+
+   - #### For ECS:
+     - **Deployment type**: Blue/Green is recommended for containers.
+     - **Service name**: Choose the ECS service to deploy.
+     - **Load balancer**: Attach an Application Load Balancer for smooth traffic shifts.
+
+3. **Configure the AppSpec File**:
+   - Add an `appspec.yml` file to your project to define the deployment lifecycle steps. Example:
+     ```yaml
+     version: 0.0
+     os: linux
+
+     hooks:
+       ApplicationStop:
+         - location: scripts/stop_container.sh
+           timeout: 300
+           runas: root
+       AfterInstall:
+         - location: scripts/start_container.sh
+           timeout: 300
+           runas: root
+     ```
+   - The `ApplicationStop` and `AfterInstall` hooks specify actions to stop existing containers and start new ones during deployment. Place this file in your code repository.
+
+---
+
+## Step 4: Finalize CodePipeline with CodeDeploy
+
+1. In **CodePipeline**, go to your pipeline, click **Edit**, and add a **Deploy stage**.
+2. **Provider**: Select **AWS CodeDeploy**.
+3. Configure the **Application name** and **Deployment group** created in CodeDeploy.
+4. Save the pipeline changes.
+
+---
+
+## Step 5: Test the CI/CD Pipeline
+
+1. Push changes to your GitHub repository to trigger the pipeline.
+2. Monitor the CodePipeline and CodeDeploy stages in the AWS console.
+3. Verify that the application deploys successfully to the target instances or containers.
+
