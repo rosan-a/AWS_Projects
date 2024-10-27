@@ -1,4 +1,5 @@
 1.Project Overview
+
 This Virtual Private Cloud (VPC) setup is designed to create a secure, scalable environment on AWS. It includes private web servers, access via a bastion host, and load balancing for efficient traffic distribution, combining security and high availability.
 
 Purpose of the VPC Setup
@@ -37,9 +38,7 @@ Firewall rules control access to each component, ensuring that public and privat
 This setup is a robust AWS environment, prioritizing security through private subnets and controlled access, while ensuring performance and scalability with a load balancer for efficient traffic management.
 
 2. Architecture Diagram
-
 ![alt text](VPC-arch-1.png)
-
 3. Setup Steps
 Document the configuration process step-by-step:
 
@@ -54,7 +53,6 @@ Security Groups:
 Document the rules set for each security group, such as allowing HTTP/HTTPS and SSH in the public subnets and more restricted access for private resources.
 Route Table Settings:
 Describe the route tables linked to each subnet, showing which routes provide access to the Internet Gateway or NAT Gateway.    
-
 4. Usage
 Provide instructions on how to use the VPC setup:
 
