@@ -17,22 +17,7 @@
 
 ---
 
-## Step 2: Set Up CodePipeline
 
-1. Go to the **CodePipeline** UI and click **Create pipeline**.
-2. **Pipeline settings**:
-   - Enter a **Pipeline name**.
-   - Create or select an **IAM role** for the pipeline.
-3. **Source stage**:
-   - Select **GitHub** as the source provider and connect your GitHub repository.
-4. **Build stage**:
-   - Choose **AWS CodeBuild** as the build provider and select your CodeBuild project from Step 1.
-5. **Deploy stage**:
-   - We’ll configure this with **AWS CodeDeploy** in Step 3.
-
-Click **Create pipeline** to finalize the setup. This pipeline will now automatically trigger on commits to the GitHub repository.
-
----
 
 ## Step 3: Set Up CodeDeploy
 
@@ -76,7 +61,22 @@ Click **Create pipeline** to finalize the setup. This pipeline will now automati
    - The `ApplicationStop` and `AfterInstall` hooks specify actions to stop existing containers and start new ones during deployment. Place this file in your code repository.
 
 ---
+## Step 2: Set Up CodePipeline
 
+1. Go to the **CodePipeline** UI and click **Create pipeline**.
+2. **Pipeline settings**:
+   - Enter a **Pipeline name**.
+   - Create or select an **IAM role** for the pipeline.
+3. **Source stage**:
+   - Select **GitHub** as the source provider and connect your GitHub repository.
+4. **Build stage**:
+   - Choose **AWS CodeBuild** as the build provider and select your CodeBuild project from Step 1.
+5. **Deploy stage**:
+   - We’ll configure this with **AWS CodeDeploy** in Step 3.
+
+Click **Create pipeline** to finalize the setup. This pipeline will now automatically trigger on commits to the GitHub repository.
+
+---
 ## Step 4: Finalize CodePipeline with CodeDeploy
 
 1. In **CodePipeline**, go to your pipeline, click **Edit**, and add a **Deploy stage**.
